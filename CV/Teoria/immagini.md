@@ -80,3 +80,22 @@ l1 = l//2 #dimezzo la luminosità di tutti i pixel
 s1 = np.full_like(s, 64) # metto a 64 tutta la saturazione
 risultato = cv.cvtColor(cv.merge((h, l1, s1)), cv.COLOR_HLS2BGR)
 ```
+## Istogramma di un'immagine grayscale
+Un istogramma identifica il numero di pixel dell'immagine per ciascun livello di grigio. Ogni colonna dell'istogramma è il numero di pixel che corrisponde al livello di grigio, si hanno in totale 255 colonne, *all'interno di ogni colonna c'è il numero di pixel per quella tonalità*.
+
+### Calcolo istogramma
+```python
+def calc_hist_python(img):
+    h = np.zeros(256, dtype=int)
+    for p in np.nditer(img):
+        h[p] += 1
+    return h
+
+def calc_hist_np(img):
+    return np.histogram(img, 256, [0, 256])[0]
+
+def calc_hist_cv(img):
+    return cv.calcHist([img], [0], None, [256], [0, 256]).squeeze() #poichè potrei fare tanti istogrammi per ogni immagine passata
+```
+### Analisi dell'istogramma
+Se i diversi oggetti in un'immagine hanno livelli di grigio differenti, l0istogramma può fornire un *primo semplice meccanismo di separazione* degli oggetti dallo sfondo.
