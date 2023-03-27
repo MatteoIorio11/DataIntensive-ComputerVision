@@ -3,7 +3,7 @@ Le immagini digitali sono una *matrice di pixel*, dove ogni pixel rappresenta il
 * Bianco e Nero;
 * Grayscale;
 * Colore;
-le immagini inoltre possono essere salvate con diversi formati e diversi stili di compressione. Per identificare *l'occupazione* totale in memoria di una immagine è necessario effettuare il calcolo: $Width Height BitDepth$. 
+le immagini inoltre possono essere salvate con diversi formati e diversi stili di compressione. Per identificare *l'occupazione* totale in memoria di una immagine è necessario effettuare il calcolo: $Width\times Height \times BitDepth$. 
 ## Matrici Gray Scale
 Una immagine in gray scale è una *matrice di punti di luce*. Tutti i valori dei singoli pixel vanno da 0 a 255, identificando per ciascun valore una tonalità differentre di grigio. Nel caso in cui i valori siano alti stanno ad identificare **maggiore luminosità** al contrario valori bassi identificano una **minore luminosità**. Le matrici *gray scale* possono essere identificate in due modi:
 - 1 Byte [0, 255];
@@ -98,4 +98,78 @@ def calc_hist_cv(img):
     return cv.calcHist([img], [0], None, [256], [0, 256]).squeeze() #poichè potrei fare tanti istogrammi per ogni immagine passata
 ```
 ### Analisi dell'istogramma
-Se i diversi oggetti in un'immagine hanno livelli di grigio differenti, l0istogramma può fornire un *primo semplice meccanismo di separazione* degli oggetti dallo sfondo.
+Se i diversi oggetti in un'immagine hanno livelli di grigio differenti, l0istogramma può fornire un *primo semplice meccanismo di separazione* degli oggetti dallo sfondo. 
+
+## Operazioni sui pixel
+Su una singola immagine: $I'[y, x] = f(I[y, x])$ (quando otteniamo una nuova immagine tramite una funzione su ogni pixel). Ogni pixel dell'immagine di uscita è *funzione* solo del corrispondente pixel dell'immagine di input (es: variazione della luminosità, variazione contrasto, ...). Questa operazione può essere eseguita anche su una serie di immagini (es operazioni aritmetiche su immagini).
+
+### Variazione luminosità e contrasto
+La funzione $f(v) = \alpha (v+\beta)$ dove:
+* $\alpha$ controlla il contrasto
+* $\beta$ la luminosità
+* v il colore del pixel originale
+i valori di output sono forzati in [0, 255]
+
+### Gamma correction
+$$
+f(v) =
+\begin{pmatrix}
+    \frac{v}{255}
+\end{pmatrix}^\gamma \times 255
+$$
+* se $\gamma < 1$ aumenta la luminosità dei toni scuri
+* se $\gamma > 1$ diminuisce la luminosità dei toni chiari 
+### Lookup Table (LUT)
+Se il numero di colori o livelli di grigio è inferiore al numero di pixel nell'immagine, è più efficiente memorizzare il risultato della funzione di mapping $f$ per ogni input in un array, da utilizzare poi come tabella per eseguire l'operazione su tutti i pixel. 
+
+$$
+I'[y, x] = f(I[y, x]) \rightarrow I'[y, x] = LUT[I[y, x]]
+$$
+Questo vuol dire che per ogni pixel nell'immagine originale, ci sarà una riga all'interno della LUT che andrà a specificare la tonalità del colore. 
+LUT=
+| v | $f(v)$  |
+|------|------|
+|  0   |   0  |
+|  .   |   .  |
+|  .   |   .  |
+|  .   |   .  |
+|  100 | 17   |
+
+Una strategia che può nascere attraverso l'utilizzo delle LUT è quella di salvare la nostra immagine in formato *gray scale* e successivamente applicare la nostra LUT, LUT[gray] in modo da ottenere la combinazione RGB.
+
+| GRAY | RED  | GREEN | BLUE |
+|------|------|-------|------|
+|  0   |   0  |  10   |  30  |
+|  .   |   .  |   .   |  .   |
+|  .   |   .  |   .   |  .   |
+|  100 | 17   |  65   | 91   |
+
+#### LUT in Python
+```python
+def applica_np_lut(img):
+    return lut[img]
+
+def applica_cv_lut(img):
+    return cv.LUT(img, lut)
+```
+
+### Lut da GrayScale a RGB
+La libreria di *OpenCV* mette a disposizione una funzione con la quale è possibile convertire una immagine a livelli di grigi in una immagine a colori appoggiandosi ad una LUT table. 
+```python
+img = cv.imread("paht", cv.IMREAD_GRAYSCALE)
+colored_img = cv.applyColorMap(img, cv.COLORMAP_JET)
+```
+## Operazioni aritmetiche fra immagini: Differenza
+Tramite l'utilizzo della sottrazione dello "sfondo" è possibile individuare gli oggetti di interesse
+```python 
+img, back = cv.imread("path1"), cv.imread("path2")
+diff = img-back
+mask = diff!=0 #maschera booleana in cui prendo tutti i bit non neri, ovvero dove c'è il nostro oggetto di interesse
+res = np.zeros_like(img)
+res[mask] = img[mask]
+```
+## Operazioni aritmetiche fra immagini: Operatori Bitwise
+Analogamente alla maschera di bit, l'operatore **AND** consente di azzerare selettivamente alcuni dei pixel in una immagine, **OR** consente invece di impostarne dei valori.
+## Operazioni aritmetiche fra immagini: Alpha Blending
+Combinazione fra uno sfondo (RGB)  e un'immagine(RGB) con abbinato un valore di "trasparenza" er ciascun pixel (fra 0 e 1).
+
