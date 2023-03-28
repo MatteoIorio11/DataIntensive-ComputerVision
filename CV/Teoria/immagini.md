@@ -172,4 +172,31 @@ res[mask] = img[mask]
 Analogamente alla maschera di bit, l'operatore **AND** consente di azzerare selettivamente alcuni dei pixel in una immagine, **OR** consente invece di impostarne dei valori.
 ## Operazioni aritmetiche fra immagini: Alpha Blending
 Combinazione fra uno sfondo (RGB)  e un'immagine(RGB) con abbinato un valore di "trasparenza" er ciascun pixel (fra 0 e 1).
+## Binarizzare un'immagine grayscale
+Durante l'operazione di binarizzazione è necessario individuare un valore soglia con il quale indicare in che colore il pixel osservato deve ricadere, tale soglia può essere scelta in diverse maniere:
+* Manualmente
+* Osservando l'istogramma
+* Metodo di Otsu: in automatico cerca sull'istogramma la soglia che minimizza la varianza intra-classe dell'intensita dei pixel delle due classi in maniera da essere completamente uniforme 
 
+$$
+    f(v, t) = 
+    \left\{
+    \begin{aligned}
+        0 \qquad v < t \\
+        255 \qquad v \geq t
+    \end{aligned}
+    \right.
+$$
+### Binarizzare un'immagine grayscale: soglia locale
+Quando oggetti e sfondo non sono uniformi, spesso non è possibile determinare una soglia globae appropriata in quanto le diverse illuminazioni possono creare dei valori soglia non corretti. 
+La **soglia locale (adattiva)** determinata per ogni pixel considerando una piccola regione dell'immagine attorno al pixel stesso. Il modo più semplice per ricavare tale valore consiste nel *determinare la soglia come media dei pixel* nella regione meno un valore costante, questo funziona quando preso un pixel ho più di un pixel di sfondo.
+```python
+img = cv.imread("path", cv.IMREAD_GRAYSCALE)
+_, res = cv.threshold(img, soglia=128, val_bianco=255, type=cv.THRESH_BINARY)
+t, res = cv.threshold(img, soglia=-1, val_bianco=255, type=cv.THRESH_OTSU)
+res = cv.adaptiveThreshold(img, val_bianco=255, type=cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 10)
+```
+## Constrast streching
+Il *constrast streching* equivale all'espansione dei livelli di grigio per aumentare il contrasto all'interno di una immagine. Si può ottenere con un sepmplice mapping lineare: $f(I[y, x])= 255 \times \frac{I[y, x] - \alpha}{\beta - \alpha}$, questo si traduce nel **scalare tutti i valori tra un minimo e un massimo**. I due parametri $\alpha$ e $\beta$ possono essere il *minimo e il massimo* livello di grigio dell'immagine. Da qui però nasce un problema ovvero quando *si ha un solo pixel pari a 0 e un solo pixel pari a 255*, rendendo inutile la tale operazione. La migliore strategia con la quale scegliere $\alpha$ e $\beta$ è attraverso l'utilizzo dell'istogramma andando a scegliere ad esempio in corrispondenza del quinti e novantacinquesimo percentile. 
+
+## Equalizzazione dell'Istogramma
