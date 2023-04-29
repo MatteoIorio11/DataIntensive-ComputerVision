@@ -81,6 +81,7 @@ Il **BroadCasting** consente di agire su input con forme diverse. Se gli array d
 a = np.array([7, 5, 3, 1]) ->  [7, 5, 3, 1]
 b = np.arange(8).reshape(2, -1) -> [[0, 1, 2, 3],
                                     [4, 5, 6, 7]]
+# -1 nel reshape cosi si arrangia lui a capire quante colonne fare
 c = a + b 
 """
 a viene convertito in una matrice con due righe, con tutti valori uguali. La prima riga verrà ricopiata nella nuova seconda riga avendo:
@@ -89,4 +90,35 @@ a = [[7, 5, 3, 1],
 """
 ```
 ## Indicizzare un array di indici
+```python
+a = np.arange(12)**2 -> [0 ,1 ,4 ,9, 16, 25, 36, 49, 64, 81, 100, 121]
+idx1 = np.array([1, 1, 3, 8, 5])
+print(a[idx1])
+"""
+Ottengo: [1, 1, 9, 64, 25]
+"""
+idx2 = np.array[[3, 4], [9, 7]]
+print(a[idx2])
+"""
+Ottengo: [[9, 16],
+          [81, 39]]
+"""
+a = (np.arange(12)**2).reshaèe(3,4) # 3 righe 4 colonne
+idx_r = np.array([[0,0,0], [1,1,1]])
+idx_c  = np.array([2,3,2], [0,0,0])
+print(a[idx_r, idx_c]) 
+"""
+[[4, 9, 4], 
+ [16, 16, 16]]
+ prendo: [(r=0, c=2), (r=0, c=3), (r=0, c=2)], (r=1, c=0), (r=1, c=0), (r=1, c=0)]
+"""
+```
+### Indicizzare con array booleani
+```python
+
+a = (np.arange(12)**2).reshaèe(3,4) # 3 righe 4 colonne
+b = a > 4
+print(a[b]) # printo solamente tutti i valori maggiori stretti di 4.
+"""
+```
 
