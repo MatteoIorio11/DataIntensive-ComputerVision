@@ -8,12 +8,18 @@ Attributi importanti degli oggetti **ndarray**:
 ## Creare un array
 * ``a1 = np.array([x1, x2, x3, ..])``
 * ``a2 = np.array([x1, x2, x3, ..], dtype=np.uint8)``
+* ``f = np.full_like(a1, x)``: Imposto una matrice f, con le stesse dimensioni di a1 ma con tutti i valori uguali a *x*
+* ``H = np.tile(np.arange(255, -1, -15), dtype=np.uint8, (x, y))``: Ricopio il mio vettore creando una matrice di x righe e y colonne.
+* ``v = np.tile(np.arange(255, -1, -15), dtype=np.uint8)[:, np.newaxis], (x, y))``: Creo una matrice con colonne i valori di np.arange
 * ``m = np.array([[x11, x12], [x21, x22], [x31, x32]])``
 * ``e = np.empty((2,7), dtype=np.uint16)``
+* ``e2 = np.empty_like(a1)``: Creo una matrice vuota con la stessa dimensione di a1
 * ``z = np.zeros(5)``: Matrice 5x5
+* ``z2 = np.zeros_like(a1)``: Matrice di zeri con la stessa dimensione di a1
 * ``on = np.ones(3, dtype=np.int)``
 * ``z2 = np.zeros((2,3))``
 * ``rnd = np.random.random((2,3))``
+* ``m = np.clip(a1, 0,255)``: Forzo il range di matrice *a1* nei valori *0* e *255*
 * ``ar = np.arange(start=100, end=110, passo=2)``
 * ``id = np.identity(3)``: Matrice con tutti "1" sulla diagonale principale
 ## Operazioni di Base
@@ -35,6 +41,7 @@ Attributi importanti degli oggetti **ndarray**:
 * ``t = a.T``: Trasposta
 * ``t = a.transpose()``: Trasposta
 * ``sq = a.squeeze()``: Rimuove eventuali dimensioni a 1
+* ``p1 = np.percentile(m, x)``: Prendo il percentile *x*
 ## Indicizzazione e Slicing
 * ``a[x]``: Accedo all'elemento in posizione *x*
 * ``a[x:y]``: Accedo ai valori dall'elemento *x* all'elemento *y-1*
