@@ -42,6 +42,10 @@ Attributi importanti degli oggetti **ndarray**:
 * ``t = a.transpose()``: Trasposta
 * ``sq = a.squeeze()``: Rimuove eventuali dimensioni a 1
 * ``p1 = np.percentile(m, x)``: Prendo il percentile *x*
+* ``diff = np.abs(m1 - m2)``: Differenza in valore assoluto tra i due vettori
+* ``a = np.isin(m1, [1, 2, 3])``: Ottengo una maschera di booleani, i cui valori sono quelli passati come secondo argomento
+* ``i_max = np.argmax(m1) | m1.argmax()``: Ottengo l'indice in cui ho il valore masimo
+* ``i_min = np.argmin(m2) | m2.argmin()``: Ottengo l'indice in cui ho il valore minimo
 ## Indicizzazione e Slicing
 * ``a[x]``: Accedo all'elemento in posizione *x*
 * ``a[x:y]``: Accedo ai valori dall'elemento *x* all'elemento *y-1*

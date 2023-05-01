@@ -65,3 +65,66 @@ Per rilevare i bordi tramite un filtro **Gaussiano** si base su:
 Derivata seconda dell'immagine
 * ``dst = cv.Laplacian(src_gray, ddepth=cv.CV_64F, ksize=kernel_size)``
 ## Analisi
+### Trasformata Distanza
+La trasformata distanza permette di ottenere la distanza di ogni pixel di *foreground* dal *background*. Ogni pixel avrà la distanza dal pixel di *background* più vicino. 
+* ``dt4 = cv.distanceTransform(img, cv.DIST_L1, size=3)``: In questo caso la distanza viene calcolata con la metrica *L1*, ovvero *alto, basso, destra e sinistra* escludendo le diagonali
+* ``dt8 = cv.distanceTransform(img, cv.DIST_C, size=3)``: In questo caso la distanza viene calcolata con la metrica *L_inf*, ovvero *alto, basso, destra, sinistra e le due diagonali*.  
+### Estrazione dei Contorni
+* ``c, topology = cv.findContours(img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)``: Questa funzione permette di estrarre solamente i contorni esterni, siccome abbiamo specificato il flag **cv.RETR_EXTERNAL**. 
+* ``res = cv.drawContours(img, contours, -1, color=(255, 0, 0), thickness=2)``: Una volta ottenuti i contorni è possibile colorarli e disegnarli attraverso questo metodo. Prima di chiamare questa funzione è necessario *avere già i contorni*.
+### Etichettatura delle componenti connesse
+* ``numbers, conn_components = cv.connectedComponents(img)``: Attraverso questa funzione è possibile ottenere le *componenti connesse* all'interno dell'immagine **binarizzata**, all'interno del vettore *conn_components* si avrà una matrice in cui ogni singola componente è identificata dallo stesso valore. Nel caso in cui io volessi ogni singola componente connessa distina posso fare: 
+```python
+n, cc = cv.connectedComponents(img)
+l = []
+for num in range(n):
+  m = np.zeros_like(cc)
+  m[cc == num] = 255
+  l.append(m)
+```
+In questo caso sapendo che ho **n** componenti connesse, io posso iterare su di essere, prendere tutte le varie componenti connesse in maniera distinta creando delle *maschere*, siccome ogni componente connessa è identificata da un numero unico. Di conseguenza la stessa componente connessa è identificata *dallo stesso numero*.
+* ``n, cc, stats, centroids = cv.connectedComponentsWithStats(img)``: In questo caso oltre a ottenere le componenti connesse, ottengo anche tutte le **statistiche** di ogni componente connessa e tutti i **centroidi** di ogni componente connessa.
+```python
+  n, cc, stats, centroids = cv.connectedComponents(img)
+  for i in range(n):
+    area = stats[i, cv.CC_STAT_AREA]
+    x, y = stats[i, cv.CC_STAT_LEFT], stats[i, cv.CC_STAT_RIGHT]
+    w, h = stats[i, cv.CC_STAT_WIDTH], stats[i, cv.STAT_HEIGTH]
+```
+  1. **stats[i, cv.CC_STAT_AREA]**: Mi permette di ottenere l'area della componente *i-esima*
+  2. **stats[i, cv.CC_STAT_LEFT]**: Ottengo il punto più a sinistra della componente connessa
+  3. **stats[i, cv.CC_STAT_RIGHT]**: Ottengo il punto più a destra della componente connessa
+  4. **stats[i, cv.CC_STAT_WIDTH]**: Ottengo la *lunghezza* della componente connessa
+  5. **stats[i, cv.CC_STAT_HEIGTH]**: Ottengo *l'altezza* della componente connessa
+### Dilatazione ed Erosione
+Attraverso la *dilatazione ed *erosione* posso eseguire operazioni fondamentali sulle *componenti connesse*.
+1. **Dilatazione**: La nuova immagine che si va ad ottenere è il risultato dell'applicazione di una maschera, si accende sempre il pixel *q*, ovvero il pixel centrale della maschera, tale pixel si accende se ho un pixel di *foreground* all'interno della mia maschera
+2. **Erosione**: La nuova immagine che si va ad ottenere è l'insieme dei pixel tali che, traslando l'intera maschera S tutti i pixel di *foregound* sono contenuti nell'elemento strutturante. Accendo il pixel se e solo se *tutti i pixel di foregound sono contenuti nell'elemento strutturante*.
+* ``se = cv.getStructuringElement(cv.MORPH_RECT, (15, 15))``: Ottengo un elemento strutturante quadrato di lato 15x15
+* ``dil = cv.morphologyEx(img, se)``: Eseguo una *dilatazione* con un filtro *se*
+* ``ero = cv.morphologyEx(img, se)``: Eseguo una *erosione* con un filtro *se*
+### Apertura e Chiusura
+* **Apertura**: Erosione seguita da dilatazione, *seprata gli oggetti debolmente connessi e rimuove regioni piccole*
+* **Chiusura**: Dilatazione seguita da erosione, *riempie buchi e piccole concavità e rafforza la connessione di regioni unite debolmente*
+* ``s = cv.getStructuringElement(cv.MORPH_ELLIPSE, (5,5))``: Ottengo un elemento strutturante di forma circolare con raggio 5.
+* ``res1 = cv.morphologyEx(img, cv.MORPH_OPEN, s)``: Eseguo un'operazione di *apertura* utilizzando *s* come elemento strutturante
+* ``res2 = cv.morphologyEx(img, cv.MORPH_CLOSE, s)``: Eseguo un'operazione di *chiusura* utilizzando *s* come elemento strutturante
+## Movimento
+### Estrazione di frame
+* ``cap = cv.VideoCapture('myvideo.mp4)``: Leggo il video
+* ``ret, frame = cap.read()``: Per leggere ogni singolo frame di un video, va usato tale metodo il quale ritorna un *flag*, il quale vale *False* quando non ho più frame da leggere
+* ``cap.release()``: Rilascio la *risorsa*
+### Algoritmo di MOG
+* ``mog = cv.createBackgroundSubractorMOG2(detectShadows=False)``: Istanzio l'oggetto poichè ho la necessità di *mantenere uno stato*
+* ``mask = mog.apply(frame)``: Eseguo l'algoritmo di *mog* sul frame grayscale, al metodo **apply** è possibile passare un valore, il *learning rate* compreso tra 0 ed 1, controlla in che misura il background è aggiornato.
+### Tracking di oggetti, Mean-Shift
+* ``conf_map = cv.calcBackProject([img], [0], histogram, [0, 255], 1)``: Ottengo la mappa di confidenzialità per l'immagine corrente
+* ``_, new_wind = cv.meanShift(confidential_map, wind, term_crit)``:  Applico l'algoritmo di *mean shift*, il quale necessita di una *mappa di confidenza* in grado di determinare quali siano gli oggetti di nostro interesse.
+## Template Matching
+* ``R = cv.matchTemplate(img, template, method=cv.TM_SQDIFF/cv.TM_SQDIFF_NORMED/cv.TM_CCORR/cv.TM_CCORR_NORMED/cv.TM_CCOEFF/cv.TM_CCOEFF_NORMED)``: Confronta *template* con tutte le posizioni di (x, y) di *img*, risultato in *R*, il valore del matching in ogni pixel.
+* ``r_min, r_max, pos_min, pos_max = cv.minMaxLoc(R)``: Ottengo il minimo e il massimo locale di R
+## CNN con openCV
+* ``net = cv.dnn.readNet('network)``: Carico la rete neurale dal file
+* ``net.setInput(cv.dnn.blobFromImage(img))``: Carico l'immagine all'interno della rete
+* ``out = net.forward()``: Esegue la rete per ottenere l'output
+* ``type = np.argmax(out) | out.argmax()``: Ottengo il valore di output più probabile
