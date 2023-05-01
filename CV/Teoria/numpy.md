@@ -51,6 +51,7 @@ Attributi importanti degli oggetti **ndarray**:
 * ``min_cols = np.argmin(m1, axis=1)``: Ottengo una lista in cui ho tutti i valori minimi in ogni riga
 * ``min_rows = np.argmin(m1, axis=0)``: Ottengo una lista in cui ho tutti i valori minimi in ogni riga
 * ``index = np.unravel_index(np.argmax(m), m.shape)``: Ottengo *row, col* in cui ho il valore massimo
+* ``np.where(condition= m1 > 10, m1, m1*10)``: In questo caso se la condizione è rispettata lascio il valore originale altrimenti il valore viene moltiplicato per 10
 ## Indicizzazione e Slicing
 * ``a[x]``: Accedo all'elemento in posizione *x*
 * ``a[x:y]``: Accedo ai valori dall'elemento *x* all'elemento *y-1*
