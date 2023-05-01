@@ -46,6 +46,11 @@ Attributi importanti degli oggetti **ndarray**:
 * ``a = np.isin(m1, [1, 2, 3])``: Ottengo una maschera di booleani, i cui valori sono quelli passati come secondo argomento
 * ``i_max = np.argmax(m1) | m1.argmax()``: Ottengo l'indice in cui ho il valore masimo
 * ``i_min = np.argmin(m2) | m2.argmin()``: Ottengo l'indice in cui ho il valore minimo
+* ``max_cols = np.argmax(m1, axis=1)``: Ottengo una lista in cui ho tutti i valori massimi in ogni riga
+* ``max_rows = np.argmax(m1, axis=0)``: Ottengo una lista in cui ho tutti i valori massimi di ogni colonna
+* ``min_cols = np.argmin(m1, axis=1)``: Ottengo una lista in cui ho tutti i valori minimi in ogni riga
+* ``min_rows = np.argmin(m1, axis=0)``: Ottengo una lista in cui ho tutti i valori minimi in ogni riga
+* ``index = np.unravel_index(np.argmax(m), m.shape)``: Ottengo *row, col* in cui ho il valore massimo
 ## Indicizzazione e Slicing
 * ``a[x]``: Accedo all'elemento in posizione *x*
 * ``a[x:y]``: Accedo ai valori dall'elemento *x* all'elemento *y-1*
