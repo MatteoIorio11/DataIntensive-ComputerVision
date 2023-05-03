@@ -19,6 +19,7 @@ Attributi importanti degli oggetti **ndarray**:
 * ``on = np.ones(3, dtype=np.int)``
 * ``z2 = np.zeros((2,3))``
 * ``rnd = np.random.random((2,3))``
+* ``rnd2 = np.random.randint(min=0, max=255, (x, y, z), dtype=np.uint8)``: Mi permette di creare un array di random da *min* a *max*, di dimensioni *x, y* con *z* canali.
 * ``m = np.clip(a1, 0,255)``: Forzo il range di matrice *a1* nei valori *0* e *255*
 * ``ar = np.arange(start=100, end=110, passo=2)``
 * ``id = np.identity(3)``: Matrice con tutti "1" sulla diagonale principale
@@ -52,6 +53,7 @@ Attributi importanti degli oggetti **ndarray**:
 * ``min_rows = np.argmin(m1, axis=0)``: Ottengo una lista in cui ho tutti i valori minimi in ogni riga
 * ``index = np.unravel_index(np.argmax(m), m.shape)``: Ottengo *row, col* in cui ho il valore massimo
 * ``np.where(condition= m1 > 10, m1, m1*10)``: In questo caso se la condizione è rispettata lascio il valore originale altrimenti il valore viene moltiplicato per 10
+* ``np.histogram(img, v_max=255, [0, 256])[0]``: Calcolo istogramma della matrice *img*, il valore massimo che voglio registrare è *v_max*
 ## Indicizzazione e Slicing
 * ``a[x]``: Accedo all'elemento in posizione *x*
 * ``a[x:y]``: Accedo ai valori dall'elemento *x* all'elemento *y-1*

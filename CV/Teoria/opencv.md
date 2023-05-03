@@ -8,6 +8,9 @@
 * ``h, l, s = cv.split(hls)``: Splitto l'immagine nei tre canali differenti
 * ``b, g, r = cv.split(bgr)``: Splitto l'immagine nei tre canali differenti
 * ``bgr = cv.merge((b, g, r))``: Unisco i tre canali formando un'unica immagine composta da *b, g, r*
+* ``img = a * img1 + b``: Funzione di variazione *luminosità* e *contrasto*, **a** regola il nostro contrasto e **b** regola la nostra luminosità
+* $f(img) = \frac{img}{255}^{\gamma} \times 255$: Funzione di *Gamma Correction*, $\gamma \le 1$ aumenta la luminosità dei toni scuri mentre $\gamma ge 1$ diminuiscire la luministà toni chiari 
+* $f(I[y, x])= 255 \times \frac{I[y, x] - \alpha}{\beta - \alpha}$: Espansione dei livelli di grigio per aumentare il contrasto, riscalo tutti i valori tra un minimo ed un massimo, scegliere $\alpha$ e $\beta$ in corrispondenza dei *percentili*, guardare metodo ``cv.equalizeHist``
 ## Calcolo Istogramma
 * ``hist = cv.calcHist([img], [0], None, vmax=[256], range=[0, 256])``: Inserisco tutto all'interno di array siccome posso calcolarne nello stesso metodo piu istogrammi
 * ``hist = np.histogram(img, vmax=256, range=[0, 256])[0]``:  Creo un istogramma utilizzando **numpy**
@@ -22,11 +25,18 @@
 * ``res  = cv.equalizeHist(img)``: Equalizzo l'istogramma distribuendo meglio i valori dell'immagine
 ## Modifiche sull'immagine
 * ``img_nn = cv.resize(img, (n_r, n_c), interpolation=cv.INTER_NEAREST)``: Faccio un resize di *img* nella nuova dimensione *(n_r, n_c)* con metodo di interpolazione *NEAREST*
+* ``cv.line(img, p1=(x1, y1), p2=(x2, y2), color=(255, 0, 0))``: Mi permette di disegnare una linea sulla mia immagine con punto di partenza *(x1, y2)* e punto di destinazione *(x2, y2)*.
 * ``img_bl = cv.resize(img, size, interpolation=cv.INTER_LINEAR)``: Metodo di interpolazione *LINEAR*
 * ``imb_bc = cv.resize(img, size, interpolation=cv.INTER_CUBIC)``: Metodo di interpolazione *CUBIC*
 ## Trasformazioni affini
 * ``img = cv.warpAffine(img, homography, size=(n_r, n_c), None, interpolation=cv.INTER_CUBIC, border_type=cv.BORDER_CONSTANT, value_border=x)``: Eseguo un warp affine utilizzando la matrice *homography*, con una nuova *size*
 * ``h = cv.getPersceptiveTRanforms(points1, points2)``
+* ``cv.getRotationMatrix2D(center=(x, y), angle=z, scale=s)``: Calcola una matrice di affinità per una rotazione 2D
+$$
+  [α−ββα(1−α)⋅center.x−β⋅center.y]
+  [β⋅center.x+(1−α)⋅center.y]
+$$
+α=scale⋅cosangle,β=scale⋅sinangle
 ## Filtri, Blur
 * ``img = cv.copyMakeBorder(img, top, bottom, left, right, cv.BORDER_DEFAULT)``
 * ``img = cv.filter2D(img, type=cv.CV_16S, filter)``: Applico il filtro *f* all'immagine, la nuova immagine avrà tipo di dato *type*, se dovessi mettere *-1* manterrei il tipo originale dell'immagine
