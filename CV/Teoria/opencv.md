@@ -28,15 +28,27 @@
 * ``cv.line(img, p1=(x1, y1), p2=(x2, y2), color=(255, 0, 0))``: Mi permette di disegnare una linea sulla mia immagine con punto di partenza *(x1, y2)* e punto di destinazione *(x2, y2)*.
 * ``img_bl = cv.resize(img, size, interpolation=cv.INTER_LINEAR)``: Metodo di interpolazione *LINEAR*
 * ``imb_bc = cv.resize(img, size, interpolation=cv.INTER_CUBIC)``: Metodo di interpolazione *CUBIC*
+## Calibrazione camera
+* ``imgP, jacobian = cv.projectPoints(objPoint=obj, rvec=r, tvec=t, camera_m=m)``: Proiezione di punti 3D sull'immagine, conversione da punti 3D a punti 2D dati i parametri *intriseci* ed *estrinseci* della camera, *rvec* è la matrice di rotazione, *tvec* è il vettore di traslazione, *camera_m* sono i valori *intrinseci* della camera
+* ``retVal, corners = cv.findChessboardCorners(img, size_chess=(w, h), corners=c, flags=..)``: Questo metodo mi permette di individuare dei vertici interi di un pattern scacchiera su un'immagine, *size_chess* numero di righe e colonne della scacchiera, *corners* array dei corner
+* ``corners = cv.cornerSubPix(img, corners, winSize, zeroZone)``: Rifinisce le coordinate della scacchiera, mi permette di trovare il pixel esatto in cui è definito il mio corner
+* ``img = cv.drawChessboardCorners(img, chess_size=(w, h), corners, retVal)``: Mi permette di visualizzare i corner della scacchiera
+* ``retVal, cameraMatrix = cv.calibrateCamera(objP, imgP, imgSize, cameraMatrix)``: Stima dei parametri *intrinseci* ed *estrinseci* da un insieme di corrispondenze di punti 3D-2D individuate in una serie di immagini di un pattern di calibrazione
+* ``cv.getOptimalNewCameraMatrix()``: Rettifica della informazione di un'immagine dati i parametri *instrinseci* della camera
 ## Trasformazioni affini
 * ``img = cv.warpAffine(img, homography, size=(n_r, n_c), None, interpolation=cv.INTER_CUBIC, border_type=cv.BORDER_CONSTANT, value_border=x)``: Eseguo un warp affine utilizzando la matrice *homography*, con una nuova *size*
-* ``h = cv.getPersceptiveTRanforms(points1, points2)``
+* ``h = cv.getPersceptiveTranforms(points1, points2)``: Mi permette di ottenere la matrice di trasformazione proiettiva, *points1, points2* sono due matrici di punti in cui sono presenti esattamente 4 punti in ciascuna matrice. 
+* ``res = cv.warpPerspective(img, persp_m=h, size=(w, h), flags=cv.INTER_CUBIC)``: Mi permette di eseguire una *trasformazione proiettiva* partendo dalla mia *img* ed utilizzando la matrice *h* per eseguire la trasformazione
 * ``cv.getRotationMatrix2D(center=(x, y), angle=z, scale=s)``: Calcola una matrice di affinità per una rotazione 2D
 $$
   [α−ββα(1−α)⋅center.x−β⋅center.y]
   [β⋅center.x+(1−α)⋅center.y]
 $$
 α=scale⋅cosangle,β=scale⋅sinangle
+* ``H = cv.getAffineTransform(m_points, pts)``: Date tre coppie di punti corrispondnenti calcola la matrice di trasformazione affine, dove:
+  1. ``m_points = np.float32([[1, 1], [3, 1], [4, 6]])``
+  2. ``c_pts = np.float32([[68, 35], [104, 51], [19, 50]], [[4, 110], [23, 14], [58, 10]])``
+
 ## Filtri, Blur
 * ``img = cv.copyMakeBorder(img, top, bottom, left, right, cv.BORDER_DEFAULT)``
 * ``img = cv.filter2D(img, type=cv.CV_16S, filter)``: Applico il filtro *f* all'immagine, la nuova immagine avrà tipo di dato *type*, se dovessi mettere *-1* manterrei il tipo originale dell'immagine
@@ -63,8 +75,8 @@ Per rilevare i bordi tramite un filtro **Gaussiano** si base su:
    * ``der = cv.Sobel(...)``: Mi permette di calcolare una sola derivata, vanno calcolate sia quella su *x* e quella su *y* tramite gli appositi flag
    * ``mod = cv.magnitude(derX, derY)``: Calcolo il modulo del gradiente per ogni pixel
    * ``angl = cv.phase(derX, derY, angleInDegrees=True)``: Ottengo l'angolo del gradiente in ogni pixel dell'immagine
-3. ``Sharr``
-4. ``Canny``:
+1. ``Sharr``
+2. ``Canny``:
    * ``edges = cv.Canny(blurred, th1, th2)``
 ### Gradiente
 * ``n = cv.normalize(img, None, 0, 255, cv.NORM_MINMAX, type=cv.CV_8U)``: Normalizzo tutti i valori dell'immagine *img*, nei valori *0* e *255*, attraverso il metodo *NORM_MINMAX* 
