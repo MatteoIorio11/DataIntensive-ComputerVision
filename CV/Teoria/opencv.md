@@ -53,12 +53,14 @@ $$
 * ``img = cv.copyMakeBorder(img, top, bottom, left, right, cv.BORDER_DEFAULT)``
 * ``img = cv.filter2D(img, type=cv.CV_16S, filter)``: Applico il filtro *f* all'immagine, la nuova immagine avrà tipo di dato *type*, se dovessi mettere *-1* manterrei il tipo originale dell'immagine
 * ``smot = cv.boxFilter(img, type=-1, k_size=(7,7), normalize=True)``: Applico un box filter con normalizzazione
+* ``f = np.ones((7, 7))``: Ottengo un filtro 7x7, posso usare questo filtro per ottenere un blur dato dalla media di un intorno 7x7 di ogni pixel
+* ``img = cv.filter2D(img, type=-1, f)``: Applico il filtro *f* ottenendo un blur dato dalla media di 7 pixel per ciascun pixel. 
 ### Blur Gaussian, Median 
 * ``bl = cv.blur(img, k_size=(x, y))``: Applico un blur all'immagine *img* con un filtro di dimensione *k_size*
 * ``g = cv.getGaussianKernel(k_size=5, omega=1)``: Creo un filtro *gaussiano* con dimensione *k_size* e con valore *omega*
 * ``img_b = cv.sepFilter(img, type=-1, g, g)``: Applico il filtro gaussiano
 * ``img_b = cv.GaussianBlue(img, k_size(5,5), omega=1)``: Applico il filtro *gaussiano* attraverso un'unica funzione
-* ``cv.medianBlue(img, k_size=x)``: Filtro mediano dell'immagine, il blur viene eseguito come *media* dei valori dei x vicini di ogni pixel.
+* ``cv.medianBlur(img, k_size=x)``: Filtro mediano dell'immagine, il blur viene eseguito come *media* dei valori dei x vicini di ogni pixel.
 ## Bordi
 Per rilevare i bordi di un'immagine bisogna compiere delle operazioni preliminari, in quanto un'immagine può contenere del **rumore**, per prima cosa quindi bisogna applicare un'operazione di *pulizia*, applicando dei filtri di blur.
 ### Trovare i bordi tramite (Difference of Gaussians)
