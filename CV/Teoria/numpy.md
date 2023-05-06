@@ -53,8 +53,12 @@ Attributi importanti degli oggetti **ndarray**:
 * ``min_rows = np.argmin(m1, axis=0)``: Ottengo una lista in cui ho tutti i valori minimi in ogni riga
 * ``index = np.unravel_index(np.argmax(m), m.shape)``: Ottengo *row, col* in cui ho il valore massimo
 * ``np.where(condition= m1 > 10, m1, m1*10)``: In questo caso se la condizione è rispettata lascio il valore originale altrimenti il valore viene moltiplicato per 10
-* ``np.histogram(img, v_max=255, [0, 256])[0]``: Calcolo istogramma della matrice *img*, il valore massimo che voglio registrare è *v_max*
+* ``hist = np.histogram(img, v_max=255, [0, 256])[0]``: Calcolo istogramma della matrice *img*, il valore massimo che voglio registrare è *v_max*
+* ``small = np.argwhere(matrix[:, cv.CC_STAT_AREA] < 130)``: Ottengo gli indici in cui ho tale condizione rispettata, nel caso in cui stessi lavorando su una matrice, riceveremo un array di coordinate *(x, y)* in cui ho tutti i valori che rispettano la condizione 
+* ``mask = np.isin(matrix, small)``: Ottengo una mappa di booleani in cui ho *True* se un valore di *matrix* è in *small*, *False* altrimenti
+* ``matr = np.squeeze(matrix_p)``: Rimovo dalla matrice *matrix_p* un asse di lunghezza **1**, *(15, 1)* -> *(15,)*
 ## Indicizzazione e Slicing
+**LE MATRICI HANNO COME PRIMO VALORE DI COORDINATA LA Y.**
 * ``a[x]``: Accedo all'elemento in posizione *x*
 * ``a[x:y]``: Accedo ai valori dall'elemento *x* all'elemento *y-1*
 * ``a[:x:p]``: Prendo tutte le righe e modifico fino a *x-1* con passo *p*, (x=6, p=2 $\rightarrow$ 0, 2, 4)
@@ -67,6 +71,7 @@ Attributi importanti degli oggetti **ndarray**:
 * ``a[x, :]``: Tutta la riga *x*
 * ``a[x]``: Tutta la riga *x*
 * ``a[-x:]``: Ultime *x* righe
+* ``a[340:] = 0``: Tutti i valori con *Y* maggiore di 340 incluso le pongo a 0
 ## Itarare su un array
 Si puo fare con la maniera classica:
 ```python

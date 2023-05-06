@@ -48,6 +48,9 @@ $$
 * ``H = cv.getAffineTransform(m_points, pts)``: Date tre coppie di punti corrispondnenti calcola la matrice di trasformazione affine, dove:
   1. ``m_points = np.float32([[1, 1], [3, 1], [4, 6]])``
   2. ``c_pts = np.float32([[68, 35], [104, 51], [19, 50]], [[4, 110], [23, 14], [58, 10]])``
+## Ottenere una maschera
+* ``mask = cv.inRange(img, min_values=(0, 20, 40), max_values=(180, 256, 256))``: Attraverso questa funzione è possibile estrapolare dall'immagine di input una maschera. Nel caso in cui avessimo un'immagine con più canali, in questo caso 3, posso esprimere 3 diverse condizioni per ogni canale. In questo esempio voglio prendere sul canale *0* tutt i valori tra *0* e *179*, sul canale *1* voglio prendere tutti i valori tra *20* e *255* e sull'ultimo canale, il canale *2* voglio prendere tutti i valori tra *40* e *255*. La maschera che si ottiene è data dall'unione dei delle tre condizioni, viene fatto un *AND* logico sulle tre condizioni in modo da tenere solo quelle che realizzano tutti e tre i criteri. 
+
 
 ## Filtri, Blur
 * ``img = cv.copyMakeBorder(img, top, bottom, left, right, cv.BORDER_DEFAULT)``
@@ -144,6 +147,7 @@ Attraverso la *dilatazione ed *erosione* posso eseguire operazioni fondamentali 
 ### Tracking di oggetti, Mean-Shift
 * ``conf_map = cv.calcBackProject([img], [0], histogram, [0, 255], 1)``: Ottengo la mappa di confidenzialità per l'immagine corrente
 * ``_, new_wind = cv.meanShift(confidential_map, wind, term_crit)``:  Applico l'algoritmo di *mean shift*, il quale necessita di una *mappa di confidenza* in grado di determinare quali siano gli oggetti di nostro interesse.
+* ``_, (x, y, w, h) = cv.meanShift(confidential=conf, wind_size=(pos[0] - OBJ_SIZE//2, pos[1]-OBJ_SIZE//2, OBJ_SIZE, OBJ_SIZE), term=TERM_CRIT)``
 ## Template Matching
 * ``R = cv.matchTemplate(img, template, method=cv.TM_SQDIFF/cv.TM_SQDIFF_NORMED/cv.TM_CCORR/cv.TM_CCORR_NORMED/cv.TM_CCOEFF/cv.TM_CCOEFF_NORMED)``: Confronta *template* con tutte le posizioni di (x, y) di *img*, risultato in *R*, il valore del matching in ogni pixel.
 * ``r_min, r_max, pos_min, pos_max = cv.minMaxLoc(R)``: Ottengo il minimo e il massimo locale di R
