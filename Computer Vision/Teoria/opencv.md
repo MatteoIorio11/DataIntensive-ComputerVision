@@ -25,6 +25,7 @@
 * ``res  = cv.equalizeHist(img)``: Equalizzo l'istogramma distribuendo meglio i valori dell'immagine
 ## Modifiche sull'immagine
 * ``img_nn = cv.resize(img, (n_r, n_c), interpolation=cv.INTER_NEAREST)``: Faccio un resize di *img* nella nuova dimensione *(n_r, n_c)* con metodo di interpolazione *NEAREST*
+* ``img = cv.resize(img, None, (0,0), scaleFactorX, scaleFactorY, interpolation=cv.INTER_AREA``: Eseguo un resize dell'immagine specificando due _fattori di scala_ in questo modo OpenCV gestitrà lui le dimensioni della mia immagine in maniera automatica. Questa tecninca può essere usata sia per rimpicciolire l'immagine che per ingrandirla.
 * ``cv.line(img, p1=(x1, y1), p2=(x2, y2), color=(255, 0, 0))``: Mi permette di disegnare una linea sulla mia immagine con punto di partenza *(x1, y2)* e punto di destinazione *(x2, y2)*.
 * ``img_bl = cv.resize(img, size, interpolation=cv.INTER_LINEAR)``: Metodo di interpolazione *LINEAR*
 * ``imb_bc = cv.resize(img, size, interpolation=cv.INTER_CUBIC)``: Metodo di interpolazione *CUBIC*
