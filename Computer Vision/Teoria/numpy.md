@@ -47,6 +47,7 @@ Attributi importanti degli oggetti **ndarray**:
 * ``a = np.isin(m1, [1, 2, 3])``: Ottengo una maschera di booleani, i cui valori sono quelli passati come secondo argomento
 * ``i_max = np.argmax(m1) | m1.argmax()``: Ottengo l'indice in cui ho il valore masimo
 * ``i_min = np.argmin(m2) | m2.argmin()``: Ottengo l'indice in cui ho il valore minimo
+* ``rotated = np.rot90(matrix, -1)``: Ruoto di 90 gradi l'immagine in senso antiorario
 * ``max_cols = np.argmax(m1, axis=1)``: Ottengo una lista in cui ho tutti i valori massimi in ogni riga
 * ``max_rows = np.argmax(m1, axis=0)``: Ottengo una lista in cui ho tutti i valori massimi di ogni colonna
 * ``min_cols = np.argmin(m1, axis=1)``: Ottengo una lista in cui ho tutti i valori minimi in ogni riga
