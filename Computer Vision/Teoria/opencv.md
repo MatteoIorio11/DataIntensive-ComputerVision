@@ -54,7 +54,7 @@ $$
 
 
 ## Filtri, Blur
-* ``img = cv.copyMakeBorder(img, top, bottom, left, right, cv.BORDER_DEFAULT)``
+* ``img = cv.copyMakeBorder(img, top, bottom, left, right, cv.BORDER_DEFAULT)``: Crea una nuova immagine a partire da *img*, aggiungedogli però del margine *top, bottom, left, right*
 * ``img = cv.filter2D(img, type=cv.CV_16S, filter)``: Applico il filtro *f* all'immagine, la nuova immagine avrà tipo di dato *type*, se dovessi mettere *-1* manterrei il tipo originale dell'immagine
 * ``smot = cv.boxFilter(img, type=-1, k_size=(7,7), normalize=True)``: Applico un box filter con normalizzazione
 * ``f = np.ones((7, 7))``: Ottengo un filtro 7x7, posso usare questo filtro per ottenere un blur dato dalla media di un intorno 7x7 di ogni pixel
